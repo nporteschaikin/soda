@@ -9,6 +9,15 @@ Bundler.setup
 require "soda"
 
 module Helpers
+  def freeze_time(time = Time.now)
+    allow(Time).to receive(:now).and_return(time)
+    allow(Date).to receive(:today).and_return(time.to_date)
+
+    yield
+
+    allow(Time).to receive(:now).and_call_original
+    allow(Date).to receive(:today).and_call_original
+  end
 end
 
 # Turn off logs
