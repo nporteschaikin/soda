@@ -32,7 +32,7 @@ Before proceeding, you'll need to create an SQS queue for storing work. In the f
 1. Add soda to your `Gemfile`:
 
   ```ruby
-  gem "soda"
+  gem "soda-core"
   ```
 
 2. Define a worker in `app/workers`:
@@ -70,7 +70,7 @@ Before proceeding, you'll need to create an SQS queue for storing work. In the f
 1. Add soda to your `Gemfile`:
 
   ```ruby
-  gem "soda"
+  gem "soda-core"
   ```
 
 2. In your application, require `soda` and define a worker:
