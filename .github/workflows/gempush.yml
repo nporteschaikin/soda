@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+    paths:
+      - './lib/soda/version.rb'
 
 jobs:
   build:
@@ -16,6 +18,14 @@ jobs:
       uses: actions/setup-ruby@v1
       with:
         version: 2.6.x
+
+    - name: Create git tag
+      run: |
+        version=$(ruby -r ./lib/soda/version.rb -e "print Soda::VERSION")
+
+        curl -s -X POST https://api.github.com/repos/${{ GITHUB_REPOSITORY }}/git/refs \
+          -h "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          -d '{"ref":"${{ GITHUB_SHA }}",sha:"$version"}'
 
     - name: Publish to RubyGems
       run: |
