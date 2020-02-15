@@ -1,7 +1,7 @@
 require_relative "lib/soda/version"
 
 Gem::Specification.new do |spec|
-  spec.name     = "soda"
+  spec.name     = "soda-core"
   spec.version  = Soda::VERSION
   spec.authors  = ["Noah Portes Chaikin"]
   spec.license  = "MIT"
