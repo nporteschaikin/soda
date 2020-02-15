@@ -12,13 +12,20 @@ module Soda
       if postpone?(job_hash, msg)
         postpone(msg)
       end
+
+      raise
     end
 
     private
 
     def postpone?(job_hash, msg)
       ret = job_hash["retry"]
-      ret.nil? || (ret.is_a?(Numeric) && ret < msg.receive_count)
+
+      if ret.is_a?(Numeric)
+        ret < msg.receive_count
+      else
+        ret
+      end
     end
 
     def postpone(msg)
