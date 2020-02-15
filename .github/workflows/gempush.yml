@@ -5,7 +5,7 @@ on:
     branches:
       - master
     paths:
-      - './lib/soda/version.rb'
+    - 'lib/soda/version.rb'
 
 jobs:
   build:
@@ -22,10 +22,14 @@ jobs:
     - name: Create git tag
       run: |
         version=$(ruby -r ./lib/soda/version.rb -e "print Soda::VERSION")
+        url=$(jq .repository.git_refs_url $GITHUB_EVENT_PATH | tr -d '"' | sed 's/{\/sha}//g')
+        echo $url
 
-        curl -s -X POST https://api.github.com/repos/${{ GITHUB_REPOSITORY }}/git/refs \
-          -h "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          -d '{"ref":"${{ GITHUB_SHA }}",sha:"$version"}'
+        curl -X POST $url \
+          -H "Authorization: token $GITHUB_TOKEN" \
+          -d "{\"ref\":\"refs/tags/v$version\",\"sha\":\"$GITHUB_SHA\"}"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Publish to RubyGems
       run: |
@@ -36,4 +40,4 @@ jobs:
         gem build *.gemspec
         gem push *.gem
       env:
-        GEM_HOST_API_KEY: ${{secrets.RUBYGEMS_AUTH_TOKEN}}
+        GEM_HOST_API_KEY: ${{ secrets.RUBYGEMS_AUTH_TOKEN }}
