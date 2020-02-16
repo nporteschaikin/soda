@@ -29,10 +29,10 @@ Before proceeding, you'll need to create an SQS queue for storing work. In the f
 
 ### Rails
 
-1. Add soda to your `Gemfile`:
+1. Add soda to your `Gemfile`, specifying `require: "soda"`:
 
   ```ruby
-  gem "soda-core"
+  gem "soda-core", require: "soda"
   ```
 
 2. Define a worker in `app/workers`:
