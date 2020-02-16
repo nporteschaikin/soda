@@ -27,6 +27,21 @@ describe Soda::Client do
         expect(parsed["delay"]).to eq(200)
         expect(parsed["klass"]).to eq("SodaClientStubWorker")
         expect(parsed["queue"]).to eq("default")
+        expect(parsed["retry"]).to eq(true)
+      end
+
+      described_class.new.push(item)
+    end
+
+    it "overwrites defaults" do
+      item = {
+        id: "foo",
+        klass: SodaClientStubWorker,
+        retry: 5,
+      }
+
+      expect_any_instance_of(Soda::Queue).to receive(:push_in) do |_, _, item|
+        expect(Soda.load_json(item)["retry"]).to eq(5)
       end
 
       described_class.new.push(item)
