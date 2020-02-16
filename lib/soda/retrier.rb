@@ -24,7 +24,7 @@ module Soda
       if ret.is_a?(Numeric)
         ret < msg.receive_count
       else
-        ret
+        !!ret
       end
     end
 
