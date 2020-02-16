@@ -23,6 +23,16 @@ module Soda
     def run
       build_options
 
+      if rails?
+        if Rails::VERSION::MAJOR >= 5
+          require "./config/environment.rb"
+          require "soda/rails"
+          logger.info("Loaded Rails v%s application." % ::Rails.version)
+        else
+          raise "Not compatible with Rails v%s!" % Rails.version
+        end
+      end
+
       manager = Manager.new
       manager.start
 
@@ -126,8 +136,11 @@ module Soda
       end
     end
 
-    def options
-      Soda.options
+    def rails?
+      require "rails"
+      defined?(::Rails)
+    rescue LoadError
+      false
     end
   end
 end

@@ -50,7 +50,9 @@ module Soda
     def process(msg)
       if (job_hash = parse_job(msg.str))
         job_logger.with(job_hash) do
-          execute(job_hash, msg)
+          reloader.wrap do
+            execute(job_hash, msg)
+          end
         end
       else
         # We can't process the work because the JSON is invalid, so we have to
@@ -97,6 +99,22 @@ module Soda
 
     def constantize(str)
       Object.const_get(str)
+    end
+
+    # To support Rails reloading from the CLI context, the following code find
+    # the Rails reloader or stubs a no-op one.
+    class StubReloader
+      def wrap; yield; end
+    end
+
+    def reloader
+      @reloader ||=
+        if defined?(::Soda::Rails)
+          application = ::Rails.application
+          application.reloader
+        else
+          StubReloader.new
+        end
     end
   end
 end
