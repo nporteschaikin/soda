@@ -28,6 +28,7 @@ module Soda
           )
         end
       end
+      alias_method :perform_at, :perform_in
 
       private
 
