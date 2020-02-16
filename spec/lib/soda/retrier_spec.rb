@@ -68,6 +68,26 @@ describe Soda::Retrier do
       end
     end
 
+    context "retry is nil" do
+      let(:item) do
+        {
+          "klass" => "HardJob",
+          "args"  => [],
+        }
+      end
+
+      it "does not update timeout" do
+        retrier = described_class.new
+
+        expect(Soda.sqs).to_not receive(:change_message_visibility)
+
+        begin
+          retrier.retry(item, msg) { raise }
+        rescue
+        end
+      end
+    end
+
     context "retries exceeded" do
       let(:item) do
         {
