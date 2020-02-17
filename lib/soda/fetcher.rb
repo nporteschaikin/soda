@@ -37,7 +37,7 @@ module Soda
       start = now
       logger.debug(%(fetching from "%s") % queue.name)
 
-      queue.pop.tap do |msgs|
+      (queue.pop || []).tap do |msgs|
         logger.debug(%(fetched %d message(s) from "%s" (%fms)) % [msgs.count, queue.name, (now - start)])
       end
     end

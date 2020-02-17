@@ -71,6 +71,12 @@ module Soda
       @options = options
     end
 
+    %i[id].each do |method|
+      define_method(method) do
+        options.fetch(String(method))
+      end
+    end
+
     private
 
     attr_reader :options
