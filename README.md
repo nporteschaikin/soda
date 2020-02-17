@@ -1,7 +1,7 @@
 # Soda
 
-[![Maintainability](https://api.codeclimate.com/v1/badges/d5ddce379e8c392c2a6a/maintainability)](https://codeclimate.com/repos/5e48277c12f0b000f1002c89/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/d5ddce379e8c392c2a6a/test_coverage)](https://codeclimate.com/repos/5e48277c12f0b000f1002c89/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/f42ad155fd0d09c7960a/maintainability)](https://codeclimate.com/github/nporteschaikin/soda/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/f42ad155fd0d09c7960a/test_coverage)](https://codeclimate.com/github/nporteschaikin/soda/test_coverage)
 ![Run tests](https://github.com/nporteschaikin/soda/workflows/Run%20tests/badge.svg?branch=master)
 
 A background job processor backed by [AWS SQS](https://aws.amazon.com/sqs/) queues and written in Ruby. Heavily inspired by [Sidekiq](https://github.com/mperham/sidekiq), a Redis-backed background processor.
