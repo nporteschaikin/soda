@@ -45,7 +45,7 @@ module Soda
           yield
         else
           entry = copy.shift
-          inst  = entry.klass.new(*entry.args)
+          inst  = entry.build
 
           inst.call(*args) do
             traverse(copy, args) { yield }
