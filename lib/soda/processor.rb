@@ -2,6 +2,12 @@ module Soda
   class Processor
     include Tools
 
+    class << self
+      def middleware
+        Soda.server_middleware
+      end
+    end
+
     def initialize(manager)
       @manager      = manager
       @retrier      = Retrier.new
@@ -71,8 +77,7 @@ module Soda
       worker  = constantize(klass)
 
       retrier.retry(job_hash, msg) do
-        middleware = Soda.server_middleware
-        middleware.use(worker, job_hash, queue.name, msg) do
+        self.class.middleware.use(worker, job_hash, queue.name, msg) do
           instance = worker.new(job_hash)
           instance.perform(*job_hash["args"])
         end
