@@ -91,7 +91,9 @@ module Soda
         opts[:config] ||= default_config
       end
 
-      parse_config_file(opts, opts.delete(:config))
+      if (file = opts.delete(:config_file))
+        parse_config_file(opts, opts.delete(:config))
+      end
 
       if (req = opts.delete(:require))
         require(req)
