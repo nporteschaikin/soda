@@ -5,12 +5,21 @@ module Soda
       "delay" => 0,
     }
 
+    class << self
+      def push(*args)
+        new.push(*args)
+      end
+    end
+
+
     def push(item)
       copy = normalize!(item)
 
       mw = Soda.client_middleware
-      mw.use(copy["klass"], copy, copy["queue"]) do
-        Soda.queue(copy["queue"]) do |queue|
+      mw.use(item["klass"], copy, copy["queue"]) do
+        jid = copy["id"]
+        jid.tap do
+          queue = Soda.queue(copy["queue"])
           queue.push_in(copy["delay"], Soda.dump_json(copy))
         end
       end

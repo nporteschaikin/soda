@@ -31,7 +31,7 @@ module Soda
 
     def run
       until stopped?
-        msgs = fetch
+        msgs = fetch || []
         msgs.each(&method(:process))
       end
     rescue Exception => ex
