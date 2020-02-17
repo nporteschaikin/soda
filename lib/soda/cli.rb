@@ -25,8 +25,11 @@ module Soda
 
       if rails?
         if Rails::VERSION::MAJOR >= 5
+          require "./config/application.rb"
           require "./config/environment.rb"
           require "soda/rails"
+          require "soda/extensions/active_job"
+
           logger.info("Loaded Rails v%s application." % ::Rails.version)
         else
           raise "Not compatible with Rails v%s!" % Rails.version
