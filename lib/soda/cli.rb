@@ -98,7 +98,7 @@ module Soda
       end
 
       if (queues = opts.delete(:queues))
-        parse_queues(queues)
+        Soda.queues = queues
       end
 
       options = Soda.options
@@ -136,40 +136,6 @@ module Soda
           ),
         ),
       )
-    end
-
-    def parse_queues(opt)
-      Soda.queues do |registry|
-        names = []
-        opt.each do |cfg|
-          # Find or create the queue.
-          queue = registry.select(cfg.delete(:name))
-
-          # Update the attributes
-          name = queue.name
-          url  = cfg.delete(:url) || queue.url
-
-          registry.register(
-            name,
-            url,
-            queue.options.merge(cfg),
-          )
-
-          names << queue.name
-        end
-
-        # For queues that are not included in the command, set their weight to
-        # zero so they can still be accessed.
-        registry.each do |queue|
-          unless names.include?(queue.name)
-            registry.register(
-              queue.name,
-              queue.url,
-              queue.options.merge(weight: 0),
-            )
-          end
-        end
-      end
     end
 
     def rails?
