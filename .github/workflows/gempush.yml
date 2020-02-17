@@ -1,4 +1,4 @@
-name: Publish Ruby gem
+name: Ruby gem
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    name: Build + Publish
+    name: Build and publish
     runs-on: ubuntu-latest
 
     steps:
@@ -25,7 +25,7 @@ jobs:
         url=$(jq .repository.git_refs_url $GITHUB_EVENT_PATH | tr -d '"' | sed 's/{\/sha}//g')
         echo $url
 
-        curl -X POST $url \
+        curl -f -X POST $url \
           -H "Authorization: token $GITHUB_TOKEN" \
           -d "{\"ref\":\"refs/tags/v$version\",\"sha\":\"$GITHUB_SHA\"}"
       env:
