@@ -23,6 +23,8 @@ module Soda
     def run
       build_options
 
+      logger.info("🥤  %s v%s" % [Soda::NAME, Soda::VERSION])
+
       if rails?
         if Rails::VERSION::MAJOR >= 5
           require "./config/application.rb"
