@@ -101,8 +101,12 @@ module Soda
           opts.merge!(require: val)
         end
 
-        o.on("-q", "--queues [PATH]", "Queue to listen to, with optional weights") do |val|
+        o.on("-q", "--queue QUEUE[,WEIGHT]", "Queue to listen to, with optional weights") do |val|
           opts.merge!(queues: opts.fetch(:queues, []).push(val.split(/\,+/)))
+        end
+
+        o.on("-c", "--concurrency [INT]", "Number of processor threads") do |val|
+          opts.merge!(concurrency: Integer(val))
         end
       end
     end
