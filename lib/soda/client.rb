@@ -9,14 +9,16 @@ module Soda
       def push(*args)
         new.push(*args)
       end
-    end
 
+      def middleware
+        Soda.client_middleware
+      end
+    end
 
     def push(item)
       copy = normalize!(item)
 
-      mw = Soda.client_middleware
-      mw.use(item["klass"], copy, copy["queue"]) do
+      self.class.middleware.use(item["klass"], copy, copy["queue"]) do
         jid = copy["id"]
         jid.tap do
           queue = Soda.queue(copy["queue"])
