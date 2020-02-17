@@ -13,7 +13,7 @@ A background job processor backed by [AWS SQS](https://aws.amazon.com/sqs/) queu
   * [Defining queues](#defining-queues)
   * [Configuration](#configuration)
   * [Alternatives](#alternatives)
-  * [Acknowledgements](#acknowledgements)
+  * [Acknowledgments](#acknowledgments)
   * [License](#license)
 
 ## Why?
