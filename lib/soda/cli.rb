@@ -12,6 +12,8 @@ module Soda
       INT,
     ].freeze
 
+    DEFAULT_CONFIG = "config/soda.yml"
+
     def self.start
       new.run
     end
@@ -85,12 +87,18 @@ module Soda
       parser  = build_option_parser(opts)
       parser.parse!(argv)
 
+      if File.exists?(default_config = File.expand_path(DEFAULT_CONFIG))
+        opts[:config] ||= default_config
+      end
+
+      parse_config_file(opts, opts.delete(:config))
+
       if (req = opts.delete(:require))
         require(req)
       end
 
-      if (queues_opt = opts.delete(:queues))
-        parse_queues(queues_opt)
+      if (queues = opts.delete(:queues))
+        parse_queues(queues)
       end
 
       options = Soda.options
@@ -104,7 +112,8 @@ module Soda
         end
 
         o.on("-q", "--queue QUEUE[,WEIGHT]", "Queue to listen to, with optional weights") do |val|
-          opts.merge!(queues: opts.fetch(:queues, []).push(val.split(/\,+/)))
+          name, weight = val.split(/,/)
+          opts.merge!(queues: opts.fetch(:queues, []).push(name: name, weight: weight))
         end
 
         o.on("-c", "--concurrency [INT]", "Number of processor threads") do |val|
@@ -113,26 +122,44 @@ module Soda
       end
     end
 
+    def parse_config_file(opts = {}, file)
+      path = File.expand_path(file)
+
+      unless File.exists?(path)
+        raise "File does not exist: %s"
+      end
+
+      opts.merge!(
+        deep_symbolize_keys(
+          YAML.load(
+            ERB.new(File.read(path)).result,
+          ),
+        ),
+      )
+    end
+
     def parse_queues(opt)
       Soda.queues do |registry|
-        opt.each do |name, weight|
+        names = []
+        opt.each do |cfg|
           # Find or create the queue.
-          queue = registry.select(name)
+          queue = registry.select(cfg.delete(:name))
 
-          if weight
-            # Replace the queue with the same one, except mutate the options to
-            # include the specified weight.
-            registry.register(
-              queue.name,
-              queue.url,
-              queue.options.merge(weight: weight.to_i),
-            )
-          end
+          # Update the attributes
+          name = queue.name
+          url  = cfg.delete(:url) || queue.url
+
+          registry.register(
+            name,
+            url,
+            queue.options.merge(cfg),
+          )
+
+          names << queue.name
         end
 
         # For queues that are not included in the command, set their weight to
         # zero so they can still be accessed.
-        names = opt.map(&:first)
         registry.each do |queue|
           unless names.include?(queue.name)
             registry.register(

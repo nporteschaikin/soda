@@ -1,8 +1,10 @@
 require "aws-sdk-sqs"
+require "erb"
 require "json"
 require "logger"
 require "securerandom"
 require "set"
+require "yaml"
 
 require "soda/tools"
 
