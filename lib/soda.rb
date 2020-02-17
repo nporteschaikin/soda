@@ -18,6 +18,7 @@ require "soda/retrier"
 require "soda/worker"
 
 module Soda
+  NAME = "Soda"
   DEFAULTS = {
     concurrency: 10,
   }
